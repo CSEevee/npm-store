@@ -62,21 +62,17 @@ type ServerError = {
     res.status(200).send('entry/entries deleted');
   });
 
-  // app.delete('/database/previouscheckout', SQLController.deletePreviousCheckout, (req: Request,res: Response) => {
-  //   res.status(200).send('entry/entries deleted');
-  // });
-
   //route - user signup (WORKING)
-  app.post('/signup', userController.createUser, userController.issueCookie, (req: Request, res: Response) => {
+  app.post('/signup', userController.createUser, userController.issueCookie, userController.verifyCookie, (req: Request, res: Response) => {
     res.status(200).send('new user is added');
   });
-  // userController.verifyCookie
+
 
   //route- user login (WORKING)
   app.post('/loginuser', userController.getUserProfile, userController.issueCookie, userController.verifyCookie, (req, res) => {
     res.status(200).send('user signed in');
   });
-  // userController.verifyCookie
+ 
   
   //catchall for non-defined pages
   app.use('*', (req: Request, res: Response) => {

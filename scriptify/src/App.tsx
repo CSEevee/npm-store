@@ -5,6 +5,7 @@ import  LoginForm from "./components/login/LoginForm.tsx"
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { DataTableDemo } from "./components/home/home.tsx";
 import ShoppingCart from "./components/shoppingCart/shoppingCart.tsx";
+import LandingPage from './components/landingPage/landingPage.tsx';
 
 function App() {
 
@@ -14,7 +15,8 @@ function App() {
         <Route path="/home" element={ <DataTableDemo/> }/>
         <Route path="/login" element={ <LoginForm/> }/>
         <Route path="/cart" element={ <ShoppingCart/> }/>
-        <Route path="/" element = { <Navigate to = "/login" />} />
+        <Route path="/" element={ <LandingPage /> } />
+        {/* <Route path="/" element = { <Navigate to = "/login" />} /> */}
       </Routes>
     </Router>
   )
