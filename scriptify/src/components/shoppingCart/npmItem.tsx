@@ -69,7 +69,7 @@ export function NpmItem({...props}) {
       <CardFooter className="flex justify-between">
         <Button variant="outline">Remove</Button>
         <a href={npmURL} target="_blank">
-        <Button >Registery Page</Button>
+        <Button >Registry Page</Button>
         </a>
       </CardFooter>
     </Card>
