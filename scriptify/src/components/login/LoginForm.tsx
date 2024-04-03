@@ -16,19 +16,18 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs"
 
-
 import { useNavigate } from "react-router-dom"
 
-
 export default function LoginForm() {
-  const navigate = useNavigate()
-  const handleLogin = () => {
-    
-    navigate("/home");
+  const navigate = useNavigate();
+  
+  function handleLogin() {
+    navigate('/home');
+    console.log('Log in successful');
   }
 
-
   return (
+    <div className="flex items-center justify-center min-h-screen pb-[300px]">
     <Tabs defaultValue="account" className="w-[400px]">
       <TabsList className="grid w-full grid-cols-2">
         <TabsTrigger value="account">Login</TabsTrigger>
@@ -39,21 +38,21 @@ export default function LoginForm() {
           <CardHeader>
             <CardTitle>Account</CardTitle>
             <CardDescription>
-             Log into your account here
+              Log into your account here.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
             <div className="space-y-1">
               <Label htmlFor="username">Username</Label>
-              <Input id="username" defaultValue="Pablo Sanchez" />
+              <Input id="username" placeholder="Username" />
             </div>
             <div className="space-y-1">
               <Label htmlFor="password">Password</Label>
-              <Input id="password" defaultValue="myPassword" />
+              <Input id="password" type="password" placeholder="Password" />
             </div>
           </CardContent>
           <CardFooter>
-            <Button>Save changes</Button>
+            <Button onClick={handleLogin}>Log in</Button>
           </CardFooter>
         </Card>
       </TabsContent>
@@ -68,11 +67,11 @@ export default function LoginForm() {
           <CardContent className="space-y-2">
             <div className="space-y-1">
               <Label htmlFor="current">Username</Label>
-              <Input id="current" type="text" />
+              <Input id="current" type="text" placeholder="Username" />
             </div>
             <div className="space-y-1">
               <Label htmlFor="new">Password</Label>
-              <Input id="new" type="password" />
+              <Input id="new" type="password" placeholder="Password" />
             </div>
           </CardContent>
           <CardFooter>
@@ -81,5 +80,6 @@ export default function LoginForm() {
         </Card>
       </TabsContent>
     </Tabs>
+    </div>
   )
 }
