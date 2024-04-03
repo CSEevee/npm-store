@@ -21,10 +21,30 @@ import { useNavigate } from "react-router-dom"
 export default function LoginForm() {
   const navigate = useNavigate();
   
-  function handleLogin() {
-    navigate('/home');
-    console.log('Log in successful');
+  //this will be a post request to http:localhost3001/login
+const handleLogin = async (username: string, userpassword: string) => {
+  try {
+    const response = await fetch ('http://localhost:3001/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ username, userpassword })
+    })
+
+    if (response.status === 200) {
+      navigate('/home');
+      console.log('Log in successful');
+    }   
+  } catch (error) {
+    console.log(`Issue logging in: ${error}`);
   }
+};
+
+  function createUser() {
+    //this will be a post request to http:localhost3000/login
+  }
+
 
   return (
     <div className="flex items-center justify-center min-h-screen pb-[300px]">
@@ -61,7 +81,7 @@ export default function LoginForm() {
           <CardHeader>
             <CardTitle>Sign-Up</CardTitle>
             <CardDescription>
-              Creat your account here.
+              Create your account here.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
@@ -75,7 +95,7 @@ export default function LoginForm() {
             </div>
           </CardContent>
           <CardFooter>
-            <Button>Create User</Button>
+            <Button onClick={createUser}>Create User</Button>
           </CardFooter>
         </Card>
       </TabsContent>
