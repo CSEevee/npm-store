@@ -16,7 +16,18 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs"
 
+
+import { useNavigate } from "react-router-dom"
+
+
 export default function LoginForm() {
+  const navigate = useNavigate()
+  const handleLogin = () => {
+    
+    navigate("/home");
+  }
+
+
   return (
     <Tabs defaultValue="account" className="w-[400px]">
       <TabsList className="grid w-full grid-cols-2">
@@ -65,7 +76,7 @@ export default function LoginForm() {
             </div>
           </CardContent>
           <CardFooter>
-            <Button>Create User</Button>
+            <Button onClick={handleLogin}>Create User</Button>
           </CardFooter>
         </Card>
       </TabsContent>
