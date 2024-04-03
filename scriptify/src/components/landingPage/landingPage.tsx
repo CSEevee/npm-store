@@ -1,7 +1,8 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import LoginForm  from '../login/LoginForm'; 
-import ImageCarousel from './imageCarousel';
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import LoginForm from "../login/LoginForm";
+import ImageCarousel from "./imageCarousel";
+import TrendingCarousel from "./trendingCarousel";
 
 const LandingPage = () => {
   const [showLoginForm, setShowLoginForm] = useState(true);
@@ -23,7 +24,10 @@ const LandingPage = () => {
             </li>
           </ul>
           {/* Shop Now button */}
-          <Link to="/home" className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+          <Link
+            to="/home"
+            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+          >
             Shop Now
           </Link>
         </div>
@@ -40,14 +44,40 @@ const LandingPage = () => {
         </div>
       )}
 
-      <div className="mt-16 bg-cover bg-center h-[400px] w-full mb-8">
+      <div className="mt-48 bg-cover bg-center h-[400px] w-full mb-8">
         <ImageCarousel />
       </div>
 
       {/* Trending packages section */}
       <div className="mb-8">
         <h2 className="text-xl font-semibold mb-4">Trending Packages</h2>
-        {/* Display your trending packages here */}
+        <TrendingCarousel />
+      </div>
+
+      {/* User reviews section */}
+      <div className="mb-8">
+        <h2 className="text-xl font-semibold mb-4">User Reviews</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-white p-4 rounded shadow">
+            <p className="text-gray-800">
+              "Scriptify is the next Apple" - Steve Jobs
+            </p>
+          </div>
+          <div className="bg-white p-4 rounded shadow">
+            <p className="text-gray-800">
+              "Scriptify is so cool, I use it everyday" - Laura B.
+            </p>
+          </div>
+          <div className="bg-white p-4 rounded shadow">
+            <p className="text-gray-800">"Hired" - NPM</p>
+          </div>
+          <div className="bg-white p-4 rounded shadow">
+            <p className="text-gray-800">
+              "Very easy to use even for a sea sponge like me" - Spongebob
+              SquarePants
+            </p>
+          </div>
+        </div>
       </div>
 
       {/* Scriptify's picks section */}
@@ -58,6 +88,5 @@ const LandingPage = () => {
     </div>
   );
 };
-
 
 export default LandingPage;

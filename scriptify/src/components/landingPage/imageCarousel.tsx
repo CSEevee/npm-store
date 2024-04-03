@@ -33,12 +33,12 @@ const ImageCarousel = () => {
 
   return (
     <div className="relative">
-      {packages.map((packageName, index) => (
+             {packages.map((packageName, index) => (
         <div
-          key={index}
-          style={{ display: index === currentImageIndex ? "block" : "none" }}
-          className={`absolute inset-0 ${colors[index]} border-2 border-white bg-opacity-50`}
-        >
+        key={index}
+        style={{ display: index === currentImageIndex ? "block" : "none" }}
+        className={`absolute inset-0 ${colors[currentImageIndex]} border-2 border-white bg-opacity-50`}
+      >
           <div className="h-full w-full flex items-center justify-center relative">
             <h2 className="text-black font-semibold text-8xl">{packageName}</h2>
             <button
@@ -65,5 +65,6 @@ const ImageCarousel = () => {
     </div>
   );
 };
+
 
 export default ImageCarousel;
