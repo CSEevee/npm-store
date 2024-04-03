@@ -1,13 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { supabase } from './superbaseClient';
 
-// interface userController {
-//     getUserProfile?: RequestHandler;
-//     createUser?: RequestHandler;
-//     issueCookie?: RequestHandler;
-//     verifyCookie?: RequestHandler;
-// }
-
 export const userController: any = {};
 
 
