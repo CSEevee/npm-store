@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -15,36 +16,64 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
-
 import { useNavigate } from "react-router-dom"
 
 export default function LoginForm() {
   const navigate = useNavigate();
+
+  const [ username, setUsername] = useState('');
+  const [ userpassword, setUserPassword] = useState('');
+
+  function updateUsername(event) {
+    setUsername(event.target.value); 
+  }
   
-  //this will be a post request to http:localhost3001/login
-const handleLogin = async (username: string, userpassword: string) => {
-  try {
-    const response = await fetch ('http://localhost:3001/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ username, userpassword })
-    })
-
-    if (response.status === 200) {
-      navigate('/home');
-      console.log('Log in successful');
-    }   
-  } catch (error) {
-    console.log(`Issue logging in: ${error}`);
+  function updatePassword(event) {
+    setUserPassword(event.target.value);
   }
-};
-
-  function createUser() {
-    //this will be a post request to http:localhost3000/login
+  
+  async function handleLogin() {
+    try {
+      const response = await fetch('/server/loginuser', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username, userpassword })
+      });
+      
+      if (response.ok) {
+        navigate('/home');
+        console.log('Log in successful');
+      } else {
+        console.log('login failed');
+      }
+    } catch (error) {
+      console.log(`Problem with login: ${error}`);
+    }
   }
 
+  async function createUser() {
+    //this will be a post request to http:localhost3001/login
+    try {
+      const response = await fetch('/server/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username, userpassword })
+      });
+      
+      if (response.ok) {
+        navigate('/home');
+        console.log('Sign Up Successful');
+      } else {
+        console.log('Sign Up Failed');
+      }
+    } catch (error) {
+      console.log(`Problem with sign up: ${error}`);
+    }
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen pb-[300px]">
@@ -64,11 +93,11 @@ const handleLogin = async (username: string, userpassword: string) => {
           <CardContent className="space-y-2">
             <div className="space-y-1">
               <Label htmlFor="username">Username</Label>
-              <Input id="username" placeholder="Username" />
+              <Input id="username" onChange={updateUsername} placeholder="Username" />
             </div>
             <div className="space-y-1">
               <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" placeholder="Password" />
+              <Input id="password" onChange={updatePassword} type="password" placeholder="Password" />
             </div>
           </CardContent>
           <CardFooter>
@@ -87,11 +116,11 @@ const handleLogin = async (username: string, userpassword: string) => {
           <CardContent className="space-y-2">
             <div className="space-y-1">
               <Label htmlFor="current">Username</Label>
-              <Input id="current" type="text" placeholder="Username" />
+              <Input id="current" onChange={updateUsername} placeholder="Username" />
             </div>
             <div className="space-y-1">
               <Label htmlFor="new">Password</Label>
-              <Input id="new" type="password" placeholder="Password" />
+              <Input id="new" onChange={updatePassword} type="password" placeholder="Password" />
             </div>
           </CardContent>
           <CardFooter>
