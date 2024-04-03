@@ -1,4 +1,6 @@
+import {useState } from 'react';
 import {NpmItem} from './npmItem';
+
 
 const testPackages = [
     { _id: '1', name: 'supertest', version: '6.3.4' , date: '2024-01-14T16:41:50.357Z', repository: 'https://github.com/ladjs/supertest'},
@@ -9,23 +11,35 @@ const testPackages = [
     { _id: '6', name: 'tslib', version: '2.6.2' , date: '2023-08-18T17:41:58.755Z', repository: 'https://github.com/Microsoft/tslib'},
     { _id: '7', name: 'chalk', version: '5.3.0' , date: '2023-06-29T10:58:11.887Z', repository: 'https://github.com/chalk/chalk'},
     ]
-    
+
 const CartItems = () => {
+
+  const [npmItemArray, setNpmItemArray] = useState(testPackages);      
+          
+  function removePackage(id: string) {
+      const index = npmItemArray.findIndex((pack) => pack._id === id);
+      if (index !== -1) {
+          // Remove the item from the testPackages array
+          const updateArray = npmItemArray.slice();
+          updateArray.splice(index, 1);
+          setNpmItemArray(updateArray);
+        }
+    }
+
     return (
     <div className="container mx-auto px-8 py-12">
         <h1 className='text-3xl font-bold mb-4'>Your Packages</h1>
         <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
-        {testPackages.map((npm) => {
+        {npmItemArray.map((npm) => {
             return (<NpmItem 
                 key={npm._id} 
                 name={npm.name}
                 version={npm.version}
                 date={npm.date}
                 repository={npm.repository}
+                removePackage={() => removePackage(npm._id)}
                 />)
         })}
-        {/* <NpmItem/> */}
-
         </div>
     </div>
     )

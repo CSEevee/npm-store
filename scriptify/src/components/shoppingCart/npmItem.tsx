@@ -67,7 +67,7 @@ export function NpmItem({...props}) {
        <a href={props.repository} target="_blank" className="font-semibold">{props.repository}</a>
       </CardContent>
       <CardFooter className="flex justify-between">
-        <Button variant="outline">Remove</Button>
+        <Button variant="outline" onClick={props.removePackage}>Remove</Button>
         <a href={npmURL} target="_blank">
         <Button >Registery Page</Button>
         </a>
