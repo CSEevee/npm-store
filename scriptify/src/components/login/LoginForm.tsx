@@ -25,18 +25,16 @@ export default function LoginForm() {
   const [ userpassword, setUserPassword] = useState('');
 
   function updateUsername(event) {
-    setUsername(event.target.value);
-    console.log('username updated', username);  
+    setUsername(event.target.value); 
   }
   
   function updatePassword(event) {
     setUserPassword(event.target.value);
-    console.log('password updated', userpassword);
   }
   
   async function handleLogin() {
     try {
-      const response = await fetch('/login', {
+      const response = await fetch('/server/loginuser', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -55,9 +53,27 @@ export default function LoginForm() {
     }
   }
 
-//   function createUser() {
-//     //this will be a post request to http:localhost3000/login
-//   }
+  async function createUser() {
+    //this will be a post request to http:localhost3001/login
+    try {
+      const response = await fetch('/server/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username, userpassword })
+      });
+      
+      if (response.ok) {
+        navigate('/home');
+        console.log('Sign Up Successful');
+      } else {
+        console.log('Sign Up Failed');
+      }
+    } catch (error) {
+      console.log(`Problem with sign up: ${error}`);
+    }
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen pb-[300px]">
@@ -100,15 +116,15 @@ export default function LoginForm() {
           <CardContent className="space-y-2">
             <div className="space-y-1">
               <Label htmlFor="current">Username</Label>
-              <Input id="current" type="text" placeholder="Username" />
+              <Input id="current" onChange={updateUsername} placeholder="Username" />
             </div>
             <div className="space-y-1">
               <Label htmlFor="new">Password</Label>
-              <Input id="new" type="password" placeholder="Password" />
+              <Input id="new" onChange={updatePassword} type="password" placeholder="Password" />
             </div>
           </CardContent>
           <CardFooter>
-            <Button>Create User</Button>
+            <Button onClick={createUser}>Create User</Button>
           </CardFooter>
         </Card>
       </TabsContent>

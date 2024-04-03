@@ -65,12 +65,13 @@ type ServerError = {
   // });
 
   //route - user signup (WORKING)
-  app.post('/signup', userController.createUser, userController.issueCookie, userController.verifyCookie, (req: Request, res: Response) => {
+  app.post('/signup', userController.createUser, userController.issueCookie, (req: Request, res: Response) => {
     res.status(200).send('new user is added');
   });
+  // userController.verifyCookie
 
   //route- user login (WORKING)
-  app.post('/login', userController.getUserProfile, userController.issueCookie, (req, res) => {
+  app.post('/loginuser', userController.getUserProfile, userController.issueCookie, (req, res) => {
     res.status(200).send('user signed in');
   });
   // userController.verifyCookie
