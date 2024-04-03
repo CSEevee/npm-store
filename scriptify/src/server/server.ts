@@ -56,9 +56,9 @@ type ServerError = {
   });
 
   //stretch feature:
-  // app.delete('/database/favorites', SQLController.deleteFavorites, (req: Request,res: Response) => {
-  //   res.status(200).send('entry/entries deleted');
-  // });
+  app.delete('/database/favorites', SQLController.deleteFavorites, (req: Request,res: Response) => {
+    res.status(200).send('entry/entries deleted');
+  });
 
   // app.delete('/database/previouscheckout', SQLController.deletePreviousCheckout, (req: Request,res: Response) => {
   //   res.status(200).send('entry/entries deleted');

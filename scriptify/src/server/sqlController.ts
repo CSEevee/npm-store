@@ -9,14 +9,15 @@ SQLController.getFavorites = async(req: Request, res: Response, next: NextFuncti
     console.log('req.body', req.body);
     const currUser = req.body.currUser;
     const {data} = await supabase.from('userprofiles').select('favorites').eq('username', currUser);
-    res.locals.favorites = data;
+    res.locals.favorites = data || [];
     return next();
-  } catch (err) {
+  } catch (error) {
     console.log('Error retrieving Favorites');
     return next({
-      log: 'SQLController.getFavorites' + err.message, 
-      message: {err: 'SQLController.getFavorites: Error retrieving Favorites'}
-      })
+      log: `ERROR in SQLController.getFavorites: ${error}`,
+      status: 500,
+      message: { error: 'Error occurred in SQLController.getFavorites' }
+  })
     }
 };
 
@@ -26,14 +27,17 @@ SQLController.addFavorites = async(req: Request, res: Response, next: NextFuncti
     const newFavs = req.body.newFavs;
     const currUser = req.body.currUser;
     //if 
-    const updatedFavorites = newFavs || [];
+    
     //var to store current stored Favorites
     const {data} = await supabase.from('userprofiles').select('favorites').eq('username', currUser);
-    // const updatedFavorites = data;
+    
+    const updatedFavorites = data ? [...(data[0]?.favorites || [])] : [];
     console.log('updated Favorites: ', updatedFavorites); //originally got: updated Favorites:  [ { favorites: null } ]
 
     //push data into stored Favorites variable array 
-    updatedFavorites.push(...(data[0]?.favorites || []));
+    if (newFavs) {
+      updatedFavorites.push(...newFavs);
+    }
 
     //update supbase
     const { error } = await supabase
@@ -42,51 +46,73 @@ SQLController.addFavorites = async(req: Request, res: Response, next: NextFuncti
      .eq('username', currUser)
     //return next
     return next();
-  } catch (err) {
+  } catch (error) {
     console.log('Error adding Favorites');
     return next({
-      log: 'SQLController.addFavorites' + err.message, 
-      message: {err: 'SQLController.addFavorites: Error adding Favorites'}
-      })
+      log: `ERROR in SQLController.addFavorites: ${error}`,
+      status: 500,
+      message: { error: 'Error occurred in SQLController.addFavorites' }
+  })
     }
 };
 
-// SQLController.deleteFavorites = async(req: Request, res: Response, next: NextFunction ) => {
-//   try {
-//     //var to store  Favorites to delete
-//     const deleteFav = req.body.deleteFav;
-//     console.log('deleteFav: ', deleteFav);
-//     const currUser = req.body.currUser;
-//     //var to store current stored Favorites
-//     const {data} = await supabase.from('userprofiles').select('favorites').eq('username', currUser);
-//     const updatedFavorites = data;
-//     console.log('updatedFavorites: ', updatedFavorites);
+//middleware to delete a favorited package
+SQLController.deleteFavorites = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    // Var to store Favorites to delete
+    const deleteFav = req.body.deleteFav;
+    const currUser = req.body.currUser;
 
-//     //push new favorites into stored Favorites variable array
-//     const index = updatedFavorites?.indexOf(deleteFav);
-//     console.log('index: ', index);
-//     if(updatedFavorites?.includes(deleteFav)) {
-//       updatedFavorites?.splice(index, 1);
-//       //update supbase
-//       const { error } = await supabase
-//        .from('userprofiles')
-//        .update({ favorites: updatedFavorites })
-//        .eq('username', currUser)
-//     }
-//     else {
-//       console.error('cannot be deleted because does not exist');
-//     }
 
-//     //return next
-//     return next();
-//   } catch (err) {
-//     console.log('Error deleting Favorites');
-//     return next({
-//       log: 'SQLController.deleteFavorites' + err.message, 
-//       message: {err: 'SQLController.deleteFavorites: Error deleting Favorites'}
-//       })
-//     }
-// };
+    // Retrieve current stored Favorites
+    const { data } = await supabase.from('userprofiles').select('favorites').eq('username', currUser);
+
+
+    if (data && data.length > 0) {
+      const updatedFavorites = data[0].favorites || [];
+
+
+      // Find the index of the favorite to delete based on its _id
+           const index = updatedFavorites.findIndex(fav => fav._id === deleteFav[0]._id);
+
+      
+      if (index !== -1) {
+        // Remove the item from the favorites array
+        updatedFavorites.splice(index, 1);
+
+        // Update supabase
+        const { error } = await supabase
+          .from('userprofiles')
+          .update({ favorites: updatedFavorites })
+          .eq('username', currUser);
+
+        if (error) {
+          console.error('Error updating favorites:', error.message);
+          throw new Error('Error updating favorites');
+        }
+
+        console.log('Favorite deleted successfully');
+      } else {
+        console.error('Cannot delete favorite because it does not exist');
+        throw new Error('Favorite does not exist');
+      }
+    } else {
+      console.error('User not found or has no favorites');
+      throw new Error('User not found or has no favorites');
+    }
+
+    // Return next
+    return next();
+  } catch (error) {
+    return next({
+      log: `ERROR in SQLController.deleteFavorites: ${error}`,
+      status: 500,
+      message: { error: 'Error occurred in SQLController.deleteFavorites' }
+  })
+  }
+};
+
+
 
 // User's Previous Checkouts
 SQLController.getPreviousCheckout = async(req: Request, res: Response, next: NextFunction ) => {
@@ -95,42 +121,55 @@ SQLController.getPreviousCheckout = async(req: Request, res: Response, next: Nex
     const {data} = await supabase.from('userprofiles').select('prev_checkouts').eq('username', currUser);
     res.locals.prevCheckouts = data;
     return next();
-  } catch (err) {
+  } catch (error) {
     console.log('Error retrieving Previous Checkouts');
     return next({
-      log: 'SQLController.getPreviousCheckout' + err.message, 
-      message: {err: 'SQLController.getPreviousCheckout: Error retrieving Previous Checkouts'}
-      })
+      log: `ERROR in SQLController.getPreviousCheckouts: ${error}`,
+      status: 500,
+      message: { error: 'Error occurred in SQLController.getPreviousCheckouts' }
+  })
     }
 };
 
 SQLController.addPreviousCheckout = async(req: Request, res: Response, next: NextFunction ) => {
   try {
-    //var to store new Checkout to add
+    // Var to store new Checkout to add
     const newCheckout = req.body.newCheckout;
     const currUser = req.body.currUser;
-    const updatedCheckouts = newCheckout || [];
-    //var to store current stored Favorites
+
+    // Var to store current stored Previous Checkouts
     const {data} = await supabase.from('userprofiles').select('prev_checkouts').eq('username', currUser);
 
-    //push new Checkout into stored previous Checkouts variable array
-    updatedCheckouts?.push(...(data[0]?.prev_checkouts || []));
+    // If data is null, initialize updatedCheckouts as an empty array
+    const updatedCheckouts = data ? [...(data[0]?.prev_checkouts || [])] : [];
 
-    //update supbase
+    // If newCheckout is provided, push its contents into updatedCheckouts
+    if (newCheckout) {
+      updatedCheckouts.push(newCheckout);
+    }
+
+    // Update Supabase with updatedCheckouts
     const { error } = await supabase
      .from('userprofiles')
      .update({ prev_checkouts: updatedCheckouts })
-     .eq('username', currUser)
-    //return next
+     .eq('username', currUser);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    // Return next
     return next();
-  } catch (err) {
+  } catch (error) {
     console.log('Error adding to Previous Checkouts');
     return next({
-      log: 'SQLController.addPreviousCheckout' + err.message, 
-      message: {err: 'SQLController.addPreviousCheckout: Error adding to Previous Checkouts'}
-      })
-    }
+      log: `ERROR in SQLController.addPreviousCheckout: ${error}`,
+      status: 500,
+      message: { error: 'Error occurred in SQLController.addPreviousCheckout' }
+    });
+  }
 };
+
 
 //stretch feature
 // SQLController.deletePreviousCheckout = async(req: Request, res: Response, next: NextFunction ) => {
