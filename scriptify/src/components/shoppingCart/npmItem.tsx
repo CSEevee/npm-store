@@ -10,30 +10,57 @@ import {
 } from "@/components/ui/card"
 // import { Icons } from "@/components/ui/icons"
 
-//   {/* {testPackages.map((package, index) => {
-//             return (<NpmItem 
-//                 id={package._id} 
-//                 name={package.name}
-//                 version={package.version}
-//                 time={package.time}
-//                 repository={package.respository}
-//                 />)
+function timeDifference(current: number, previous: number) {
 
-// type Packages = {
-//     id= number; 
-//     name={package.name}
-//     version={package.version}
-//     time={package.time}
-//     repository={package.respository}
-// }
- 
+    const msPerMinute = 60 * 1000;
+    const msPerHour = msPerMinute * 60;
+    const msPerDay = msPerHour * 24;
+    const msPerMonth = msPerDay * 30;
+    const msPerYear = msPerDay * 365;
+
+    const elapsed = current - previous;
+
+    if (elapsed < msPerMinute) {
+         return Math.round(elapsed/1000) + ' seconds ago';   
+    }
+
+    else if (elapsed < msPerHour) {
+         return Math.round(elapsed/msPerMinute) + ' minutes ago';   
+    }
+
+    else if (elapsed < msPerDay ) {
+         return Math.round(elapsed/msPerHour ) + ' hours ago';   
+    }
+
+    else if (elapsed < msPerMonth) {
+        return Math.round(elapsed/msPerDay) + ' days ago';   
+    }
+
+    else if (elapsed < msPerYear) {
+        return Math.round(elapsed/msPerMonth) + ' months ago';   
+    }
+
+    else {
+        return Math.round(elapsed/msPerYear ) + ' years ago';   
+    }
+}
+
+function registeryURL(name: string) {
+  return "https://www.npmjs.com/package/" + name;
+}
+
+
 export function NpmItem({...props}) {
-    console.log(props);
+    const currDate = new Date().getTime();
+    const pubDate = new Date(props.date).getTime();
+    const time = timeDifference( currDate, pubDate);
+    const npmURL = registeryURL(props.name);
+
   return (
-    <Card className="w-[350px] sm:grid-cols-2">
+    <Card className=" sm:grid-cols-2">
       <CardHeader>
         <CardTitle>{props.name}</CardTitle>
-        <CardDescription>{props.version} - Public - Published {props.time}</CardDescription>
+        <CardDescription>{props.version} - Public - Published {time}</CardDescription>
       </CardHeader>
       <CardContent>
        <p className="text-slate-400 font-semibold ">Repository</p>
@@ -41,7 +68,9 @@ export function NpmItem({...props}) {
       </CardContent>
       <CardFooter className="flex justify-between">
         <Button variant="outline">Remove</Button>
-        <Button>Registery Page</Button>
+        <a href={npmURL} target="_blank">
+        <Button >Registery Page</Button>
+        </a>
       </CardFooter>
     </Card>
   )
