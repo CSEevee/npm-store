@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -15,16 +16,48 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
-
 import { useNavigate } from "react-router-dom"
 
 export default function LoginForm() {
   const navigate = useNavigate();
-  
-  function handleLogin() {
-    navigate('/home');
-    console.log('Log in successful');
+
+  const [ username, setUsername] = useState('');
+  const [ userpassword, setUserPassword] = useState('');
+
+  function updateUsername(event) {
+    setUsername(event.target.value);
+    console.log('username updated', username);  
   }
+  
+  function updatePassword(event) {
+    setUserPassword(event.target.value);
+    console.log('password updated', userpassword);
+  }
+  
+  async function handleLogin() {
+    try {
+      const response = await fetch('/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username, userpassword })
+      });
+      
+      if (response.ok) {
+        navigate('/home');
+        console.log('Log in successful');
+      } else {
+        console.log('login failed');
+      }
+    } catch (error) {
+      console.log(`Problem with login: ${error}`);
+    }
+  }
+
+//   function createUser() {
+//     //this will be a post request to http:localhost3000/login
+//   }
 
   return (
     <div className="flex items-center justify-center min-h-screen pb-[300px]">
@@ -44,11 +77,11 @@ export default function LoginForm() {
           <CardContent className="space-y-2">
             <div className="space-y-1">
               <Label htmlFor="username">Username</Label>
-              <Input id="username" placeholder="Username" />
+              <Input id="username" onChange={updateUsername} placeholder="Username" />
             </div>
             <div className="space-y-1">
               <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" placeholder="Password" />
+              <Input id="password" onChange={updatePassword} type="password" placeholder="Password" />
             </div>
           </CardContent>
           <CardFooter>

@@ -1,5 +1,5 @@
-
 import express, { Request, Response, NextFunction} from 'express';
+import cors from 'cors';
 import { supabase } from './superbaseClient';
 import { SQLController } from './sqlController';
 import { userController } from './userController';
@@ -10,11 +10,13 @@ import { userController } from './userController';
   }
 retrievedData();
 
-
 const app = express();
+const port = process.env.PORT || 3001; // Ensure this port does not conflict with Vite's
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-const port = process.env.PORT || 3001; // Ensure this port does not conflict with Vite's
+app.use(cors());
+
 
 //delcaring a type for ServerError object
 type ServerError = {
@@ -68,9 +70,10 @@ type ServerError = {
   });
 
   //route- user login (WORKING)
-  app.post('/login', userController.getUserProfile, userController.issueCookie, userController.verifyCookie, (req, res) => {
+  app.post('/login', userController.getUserProfile, userController.issueCookie, (req, res) => {
     res.status(200).send('user signed in');
   });
+  // userController.verifyCookie
   
   //catchall for non-defined pages
   app.use('*', (req: Request, res: Response) => {

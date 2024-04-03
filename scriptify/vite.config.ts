@@ -8,6 +8,16 @@ export default defineConfig({
     sourcemap: true, // or 'inline' if you want inline sourcemaps
     // Other build options...
   },
+  server:{
+    port: 5173,
+    proxy: {
+      '/login': {
+        target: 'http://localhost:3001',
+        changeOrigin: true,
+        secure: false
+      }
+    }
+  },
   plugins: [react()],
   resolve: {
     alias: {
