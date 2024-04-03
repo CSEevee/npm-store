@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -15,15 +16,63 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
-
 import { useNavigate } from "react-router-dom"
 
 export default function LoginForm() {
   const navigate = useNavigate();
+
+  const [ username, setUsername] = useState('');
+  const [ userpassword, setUserPassword] = useState('');
+
+  function updateUsername(event) {
+    setUsername(event.target.value); 
+  }
   
-  function handleLogin() {
-    navigate('/home');
-    console.log('Log in successful');
+  function updatePassword(event) {
+    setUserPassword(event.target.value);
+  }
+  
+  async function handleLogin() {
+    try {
+      const response = await fetch('/server/loginuser', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username, userpassword })
+      });
+      
+      if (response.ok) {
+        navigate('/home');
+        console.log('Log in successful');
+      } else {
+        console.log('login failed');
+      }
+    } catch (error) {
+      console.log(`Problem with login: ${error}`);
+    }
+  }
+
+  async function createUser() {
+    //this will be a post request to http:localhost3001/login
+    try {
+      const response = await fetch('/server/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username, userpassword })
+      });
+      
+      if (response.ok) {
+        navigate('/home');
+        console.log('Sign Up Successful');
+      } else {
+        console.log('Sign Up Failed');
+      }
+    } catch (error) {
+      console.log(`Problem with sign up: ${error}`);
+    }
   }
 
   return (
@@ -44,11 +93,11 @@ export default function LoginForm() {
           <CardContent className="space-y-2">
             <div className="space-y-1">
               <Label htmlFor="username">Username</Label>
-              <Input id="username" placeholder="Username" />
+              <Input id="username" onChange={updateUsername} placeholder="Username" />
             </div>
             <div className="space-y-1">
               <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" placeholder="Password" />
+              <Input id="password" onChange={updatePassword} type="password" placeholder="Password" />
             </div>
           </CardContent>
           <CardFooter>
@@ -61,21 +110,21 @@ export default function LoginForm() {
           <CardHeader>
             <CardTitle>Sign-Up</CardTitle>
             <CardDescription>
-              Creat your account here.
+              Create your account here.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
             <div className="space-y-1">
               <Label htmlFor="current">Username</Label>
-              <Input id="current" type="text" placeholder="Username" />
+              <Input id="current" onChange={updateUsername} placeholder="Username" />
             </div>
             <div className="space-y-1">
               <Label htmlFor="new">Password</Label>
-              <Input id="new" type="password" placeholder="Password" />
+              <Input id="new" onChange={updatePassword} type="password" placeholder="Password" />
             </div>
           </CardContent>
           <CardFooter>
-            <Button onClick={handleLogin}>Create User</Button>
+            <Button onClick={createUser}>Create User</Button>
           </CardFooter>
         </Card>
       </TabsContent>

@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 //supabase connection
 const supabaseUrl = 'https://wixzydeumdmhubkemfgy.supabase.co'
 dotenv.config();
-const supabaseKey = process.env.SUPABASE_KEY
+const supabaseKey = process.env.SUPABASE_KEY || '';
 export const supabase = createClient(supabaseUrl, supabaseKey)
 
 

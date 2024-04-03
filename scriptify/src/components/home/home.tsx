@@ -39,42 +39,8 @@ import {
 } from "@/components/ui/table"
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { supabase } from '@supabase/supabase-js'
-//update state to hold fetched data
 
-// const data: Payment[] = [
-//   {
-//     id: "m5gr84i9",
-//     amount: 316,
-//     status: "success",
-//     email: "ken99@yahoo.com",
-//   },
-//   {
-//     id: "3u1reuv4",
-//     amount: 242,
-//     status: "success",
-//     email: "Abe45@gmail.com",
-//   },
-//   {
-//     id: "derv1ws0",
-//     amount: 837,
-//     status: "processing",
-//     email: "Monserrat44@gmail.com",
-//   },
-//   {
-//     id: "5kma53ae",
-//     amount: 874,
-//     status: "success",
-//     email: "Silas22@gmail.com",
-//   },
-//   {
-//     id: "bhqecj4p",
-//     amount: 721,
-//     status: "failed",
-//     email: "carmella@hotmail.com",
-//   },
-// ]
-
+// Define the shape of the data
 export type Payment = {
   id: string
   amount: number
@@ -161,11 +127,11 @@ export const columns: ColumnDef<Payment>[] = [
             <DropdownMenuItem
               onClick={() => navigator.clipboard.writeText(payment.id)}
             >
-              Copy payment ID
+              Copy Name
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
+            {/* <DropdownMenuItem>View customer</DropdownMenuItem> */}
+            {/* <DropdownMenuItem>View payment details</DropdownMenuItem> */}
           </DropdownMenuContent>
         </DropdownMenu>
       )
@@ -173,21 +139,150 @@ export const columns: ColumnDef<Payment>[] = [
   },
 ]
 
+
+// export const getColumns = (handleAddToCart, handleRemoveFromCart, cartItems) => {
+//   return columns.map((col) => {
+//     if (col.accessorKey === 'amount') {
+//       return {
+//         ...col,
+//         cell: ({ row }) => (
+//           <div>
+//             <Button
+//               className="text-right font-medium"
+//               onClick={() => handleAddToCart(row.original)}
+//             >
+//               ADD
+//             </Button>
+//           </div>
+//         ),
+//       };
+//     }
+//     return col;
+//   });
+// };
+
+export const getColumns = (handleAddToCart, handleRemoveFromCart, cartItems) => {
+  return columns.map((col) => {
+    if (col.accessorKey === 'amount') {
+      return {
+        ...col,
+        cell: ({ row }) => {
+          const item = row.original;
+          const isInCart = cartItems.some((cartItem) => cartItem.id === item.id);
+          return (
+            <div>
+              {isInCart ? ( // Check if the item is in the cart and display the appropriate button
+                <Button
+                  className="text-right font-medium"
+                  onClick={() => handleRemoveFromCart(item)}  
+                >
+                  REMOVE
+                </Button>
+              ) : (
+                <Button
+                  className="text-right font-medium"
+                  onClick={() => handleAddToCart(item)}
+                >
+                  ADD
+                </Button>
+              )}
+            </div>
+          );
+        },
+      };
+    }
+    return col;
+  }
+  );
+}
+
+
+
+
+
+//               {cartItems.find(cartItem => cartItem.id === item.id) ? (
+//                 <Button
+//                   className="text-right font-medium"
+//                   onClick={() => handleRemoveFromCart(item)}
+//                 >
+//                   REMOVE
+//                 </Button>
+//               ) : (
+//                 <Button
+//                   className="text-right font-medium"
+//                   onClick={() => handleAddToCart(item)}
+//                 >
+//                   ADD
+//                 </Button>
+//               )}
+//             </div>
+//           );
+//         },
+//       };
+//     }
+//     return col;
+//   });
+// };
+
+
 export function DataTableDemo() {
   const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  )
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
-
+  const [cartCount, setCartCount] = useState(0);
+  // Add a new state variable to store the items in the cart
+  const [cartItems, setCartItems] = useState([]);
   const [fetchedData, setFetchedData] = useState<Payment[]>([]);
   const [inputValue, setInputValue] = useState('');
+  //initialize cart items from local storage
+  useEffect(() => {
+    const storedCartItems = JSON.parse(localStorage.getItem('cart') || '[]');
+    setCartItems(storedCartItems);
+    setCartCount(storedCartItems.length);
+  }, []);
+  
+
+  const handleAddToCart = (rowData) => {
+    console.log('Add to cart:', rowData);
+    //get current cart data from local storage
+    const cartData = JSON.parse(localStorage.getItem('cart') || '[]');
+    //add new row data to cart data
+    cartData.push(rowData);
+    //update cart items with name of item
+    setCartItems([...cartItems, rowData]);
+    //update cart count
+    setCartCount(cartItems.length + 1);
+    //update local storage with new cart data
+    localStorage.setItem('cart', JSON.stringify([...cartItems, rowData]));
+    //setCartCount((prevCount) => prevCount + 1);
+  };
+
+  const handleRemoveFromCart = (item) => {
+    const updatedCartItems = cartItems.filter((cartItem) => cartItem.id !== item.id);
+  
+    // Remove the item from the cartItems state
+    setCartItems(updatedCartItems);
+  
+    // Update the cart count
+    setCartCount(updatedCartItems.length);
+  
+    // Update localStorage
+    localStorage.setItem('cart', JSON.stringify(updatedCartItems));
+  };
+  
+  
+  // const handleRemoveFromCart = (rowData) => {
+  //   setCartItems(cartItems.filter(cartItem => cartItem.id !== rowData.id));
+  // };
+
+  //const columns = getColumns(handleAddToCart);
+  const newColumns = getColumns(handleAddToCart, handleRemoveFromCart, cartItems);
 
   const table = useReactTable({
     data: fetchedData, //using fetched data from state
-    columns,
+    columns: newColumns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -207,8 +302,9 @@ export function DataTableDemo() {
     console.log('fetching data');
     console.log('inputValue:', inputValue);
     try {
+      // will need to be routed to backend to avoid the CORS issue... this is a temporary solution
       // Construct the API URL using the inputValue state
-      const response = await axios.get(`http://registry.npmjs.com/-/v1/search?text=${inputValue}&size=20`);
+      const response = await axios.get(`https://cors-anywhere.herokuapp.com/http://registry.npmjs.com/-/v1/search?text=${inputValue}&size=20`);
       // Update the firstFivePosts variable to match the expected data structure
       console.log('response:', response);
       setFetchedData(response.data.objects.map((pkg: any) => ({
@@ -225,6 +321,7 @@ export function DataTableDemo() {
   useEffect(() => {
     fetchData();
   }, []);
+
   return (
     <div className="w-full">
       <div className="flex items-center py-4">
@@ -239,10 +336,14 @@ export function DataTableDemo() {
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
             <FontAwesomeIcon icon={faShoppingCart} />
+            <span>{cartCount}</span> {/* Display the cart count */}
             <ChevronDown className="ml-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
+          {cartItems.map((item, index) => (
+            <div key={index}>{item.id}</div>
+          ))}
             {table
               .getAllColumns()
               .filter((column) => column.getCanHide())
@@ -340,3 +441,4 @@ export function DataTableDemo() {
     </div>
   )
 }
+
