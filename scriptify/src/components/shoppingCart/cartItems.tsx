@@ -19,7 +19,6 @@ const CartItems = () => {
   function removePackage(id: string) {
       const index = npmItemArray.findIndex((pack) => pack._id === id);
       if (index !== -1) {
-          // Remove the item from the testPackages array
           const updateArray = npmItemArray.slice();
           updateArray.splice(index, 1);
           setNpmItemArray(updateArray);
