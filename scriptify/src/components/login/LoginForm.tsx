@@ -110,7 +110,7 @@ export default function LoginForm() {
           <CardHeader>
             <CardTitle>Sign-Up</CardTitle>
             <CardDescription>
-              Creat your account here.
+              Create your account here.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">

@@ -1,5 +1,6 @@
 import express, { Request, Response, NextFunction} from 'express';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import { supabase } from './superbaseClient';
 import { SQLController } from './sqlController';
 import { userController } from './userController';
@@ -16,6 +17,7 @@ const port = process.env.PORT || 3001; // Ensure this port does not conflict wit
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
+app.use(cookieParser());
 
 
 //delcaring a type for ServerError object
@@ -55,10 +57,10 @@ type ServerError = {
     res.status(200).send('Checkout added');
   });
 
-  //stretch feature:
-  // app.delete('/database/favorites', SQLController.deleteFavorites, (req: Request,res: Response) => {
-  //   res.status(200).send('entry/entries deleted');
-  // });
+  //route- delete a previously saved favorite
+  app.delete('/database/favorites', SQLController.deleteFavorites, userController.verifyCookie, (req: Request,res: Response) => {
+    res.status(200).send('entry/entries deleted');
+  });
 
   // app.delete('/database/previouscheckout', SQLController.deletePreviousCheckout, (req: Request,res: Response) => {
   //   res.status(200).send('entry/entries deleted');
@@ -71,7 +73,7 @@ type ServerError = {
   // userController.verifyCookie
 
   //route- user login (WORKING)
-  app.post('/loginuser', userController.getUserProfile, userController.issueCookie, (req, res) => {
+  app.post('/loginuser', userController.getUserProfile, userController.issueCookie, userController.verifyCookie, (req, res) => {
     res.status(200).send('user signed in');
   });
   // userController.verifyCookie
