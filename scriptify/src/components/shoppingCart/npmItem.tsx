@@ -64,10 +64,10 @@ export function NpmItem({...props}) {
       </CardHeader>
       <CardContent>
        <p className="text-slate-400 font-semibold ">Repository</p>
-       <a href={props.repository} className="font-semibold">{props.repository}</a>
+       <a href={props.repository} target="_blank" className="font-semibold">{props.repository}</a>
       </CardContent>
       <CardFooter className="flex justify-between">
-        <Button variant="outline">Remove</Button>
+        <Button variant="outline" onClick={props.removePackage}>Remove</Button>
         <a href={npmURL} target="_blank">
         <Button >Registery Page</Button>
         </a>
