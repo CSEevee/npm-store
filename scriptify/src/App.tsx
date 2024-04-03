@@ -4,7 +4,7 @@ import  LoginForm from "./components/login/LoginForm.tsx"
 // import Dashboard  from './components/home/home.tsx';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { DataTableDemo } from "./components/home/home.tsx";
-
+import ShoppingCart from "./components/shoppingCart/shoppingCart.tsx";
 
 function App() {
 
@@ -13,7 +13,7 @@ function App() {
     <Routes>
         <Route path="/home" element={ <DataTableDemo/> }/>
         <Route path="/login" element={ <LoginForm/> }/>
-        {/* <Route path="/cart" element={ <Cart/> }/> */}
+        <Route path="/cart" element={ <ShoppingCart/> }/>
         <Route path="/" element = { <Navigate to = "/login" />} />
       </Routes>
     </Router>
