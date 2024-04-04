@@ -39,13 +39,18 @@ import {
 } from "@/components/ui/table"
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 
 // Define the shape of the data
 export type Payment = {
-  id: string
-  amount: number
-  status: string
-  email: string
+  id: string // name -- shows in home
+  name: string //id 
+  version: string //version
+  date: string //date
+  repository: string //repository 
+  amount: number//-- shows in home
+  status: string//-- shows in home
+  email: string//-- shows in home
 }
 
 export const columns: ColumnDef<Payment>[] = [
@@ -236,6 +241,7 @@ export function DataTableDemo() {
   const [cartItems, setCartItems] = useState([]);
   const [fetchedData, setFetchedData] = useState<Payment[]>([]);
   const [inputValue, setInputValue] = useState('');
+  const navigate = useNavigate();
   //initialize cart items from local storage
   useEffect(() => {
     const storedCartItems = JSON.parse(localStorage.getItem('cart') || '[]');
@@ -308,10 +314,13 @@ export function DataTableDemo() {
       // Update the firstFivePosts variable to match the expected data structure
       console.log('response:', response);
       setFetchedData(response.data.objects.map((pkg: any) => ({
-        id: pkg.package.name,
-        amount: 0, // Placeholder value, adjust as needed
-        status: pkg.package.name, // Placeholder value, adjust as needed
-        email: pkg.package.description, // Using package description as a placeholder
+        id: pkg.package.name, // name -- shows in home
+        version: pkg.package.version, //version
+        date: pkg.package.date, //date
+        repository: pkg.package.links.repository, //repository 
+        amount: 0, //-- shows in home
+        status: pkg.package.name,//-- shows in home
+        email: pkg.package.description,//-- shows in home
       })));
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -332,6 +341,7 @@ export function DataTableDemo() {
           className="max-w-sm"
         />
         <Button onClick={fetchData}>Search</Button>
+        <Button className="ml-2 h-4 w-400" onClick={() => navigate('/cart')}>Go to Cart</Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
