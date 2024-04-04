@@ -1,5 +1,6 @@
 import {useState } from 'react';
 import {NpmItem} from './npmItem';
+import { atom } from 'jotai';
 
 
 const testPackages = [
@@ -12,12 +13,18 @@ const testPackages = [
     { _id: '7', name: 'chalk', version: '5.3.0' , date: '2023-06-29T10:58:11.887Z', repository: 'https://github.com/chalk/chalk'},
     ]
 
+const items = JSON.parse(localStorage.getItem('cart'));
+console.log('items',items);
+export const npmArrayAtom = atom(items);
+// export const npmArrayAtom = atom(testPackages);
+
 const CartItems = () => {
 
-  const [npmItemArray, setNpmItemArray] = useState(testPackages);      
+  const [npmItemArray, setNpmItemArray] = useState(items);  
+  console.log('npmItemArray', typeof npmItemArray);    
           
   function removePackage(id: string) {
-      const index = npmItemArray.findIndex((pack) => pack._id === id);
+      const index = npmItemArray.findIndex((pack) => pack.id === id);
       if (index !== -1) {
           const updateArray = npmItemArray.slice();
           updateArray.splice(index, 1);
@@ -31,12 +38,12 @@ const CartItems = () => {
         <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
         {npmItemArray.map((npm) => {
             return (<NpmItem 
-                key={npm._id} 
-                name={npm.name}
+                key={npm.id} 
+                name={npm.id}
                 version={npm.version}
                 date={npm.date}
                 repository={npm.repository}
-                removePackage={() => removePackage(npm._id)}
+                removePackage={() => removePackage(npm.id)}
                 />)
         })}
         </div>

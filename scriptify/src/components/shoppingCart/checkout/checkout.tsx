@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '../../ui/button';
+import { npmArrayAtom } from '../cartItems';
 
 const Checkout = () => {
   const [command, setCommand] = useState('');
@@ -10,9 +11,22 @@ const Checkout = () => {
     setShowCheckout(true);
   }
 
+  function generateNPMScript(arrayNpm: []){
+    let npmScript = 'npm i';
+    console.log('arrayNpm: ', arrayNpm);
+    arrayNpm.forEach((name) => {
+      npmScript = npmScript + ' ' + name.name;
+    })
+    return npmScript;
+  }
+
+ let npmScript = generateNPMScript(npmArrayAtom.init);
+ console.log('script', npmScript);
+
+
   //use navigator.clipboard to copy text!
   const handleCopy = () => {
-    navigator.clipboard.writeText(command)
+    navigator.clipboard.writeText(npmScript)
       .then(() => {
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
@@ -54,23 +68,6 @@ const Checkout = () => {
  
 
   return (
-    // <div className="container mx-auto px-8 py-12">
-    //   <h2 className="text-3xl font-bold mb-4">Checkout</h2>
-    //   <div className="relative border rounded-md p-4 mb-4">
-    //     <p className="text-lg font-semibold mb-4">Paste the command below:</p>
-    //     <div className="border border-gray-300 rounded-md p-4 h-48 flex items-center justify-center">
-    //       <p>{command}</p>
-    //     </div>
-    //     <Button onClick={handleCopy} className="absolute top-2 right-2 flex items-center">
-    //       <span className="mr-1">Copy Command</span>
-    //       {copied && <span className="absolute top-full right-0 mt-2 bg-gray-800 text-white px-2 py-1 rounded-md">Copied to clipboard</span>}
-    //       <svg className="h-4 w-4 ml-1 inline-block" viewBox="0 0 20 20" fill="currentColor">
-    //         <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v1h2a1 1 0 011 1v12a2 2 0 01-2 2H6a2 2 0 01-2-2V6a1 1 0 011-1h2V4zm10 0H6v1h8V4z" clipRule="evenodd"/>
-    //       </svg>
-    //     </Button>
-    //   </div>
-    //   <p className="text-lg font-semibold">Estimated Cost: $0.00</p>
-    // </div>
     <div className="container mx-auto px-8 py-12">
       {showCart ? (
         <div>
@@ -81,9 +78,9 @@ const Checkout = () => {
         <div>
           <h2 className="text-3xl font-bold mb-4">Checkout</h2>
           <div className="relative border rounded-md p-4 mb-4">
-            <p className="text-lg font-semibold mb-4">Paste the command below:</p>
-            <div className="border border-gray-300 rounded-md p-4 h-48 flex items-center justify-center">
-              <p>{command}</p>
+            <p className="text-lg font-semibold mb-4">Your package awaits...</p>
+            <div className="border border-gray-300 text-orange-500 rounded-md p-4 flex items-center justify-center">
+              <p>{npmScript}</p>
             </div>
             <Button onClick={handleCopy} className="absolute top-2 right-2 flex items-center">
               <span className="mr-1">Copy Command</span>
@@ -93,7 +90,6 @@ const Checkout = () => {
               </svg>
             </Button>
           </div>
-          <p className="text-lg font-semibold">Estimated Cost: $0.00</p>
         </div>
       )}
     </div>

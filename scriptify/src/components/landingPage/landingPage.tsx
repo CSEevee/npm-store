@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import LoginForm from "../login/LoginForm";
 import ImageCarousel from "./imageCarousel";
 import TrendingCarousel from "./trendingCarousel";
+import ScriptifyPicks from './scriptifyPicks';
 
 const LandingPage = () => {
   const [showLoginForm, setShowLoginForm] = useState(true);
@@ -21,6 +22,9 @@ const LandingPage = () => {
             </li>
             <li>
               <Link to="/favorites">Favorites</Link>
+            </li>
+            <li>
+              <Link to="/cart">Cart</Link>
             </li>
           </ul>
           {/* Shop Now button */}
@@ -83,7 +87,7 @@ const LandingPage = () => {
       {/* Scriptify's picks section */}
       <div className="mb-8">
         <h2 className="text-xl font-semibold mb-4">Scriptify's Picks</h2>
-        {/* Display Scriptify's picks here */}
+        <ScriptifyPicks />
       </div>
     </div>
   );

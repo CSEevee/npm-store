@@ -10,6 +10,7 @@ import LandingPage from './components/landingPage/landingPage.tsx';
 function App() {
 
   return (
+ <div>   
   <Router>
     <Routes>
         <Route path="/home" element={ <DataTableDemo/> }/>
@@ -19,6 +20,7 @@ function App() {
         {/* <Route path="/" element = { <Navigate to = "/login" />} /> */}
       </Routes>
     </Router>
+  </div>
   )
 }
 
