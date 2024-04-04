@@ -26,6 +26,7 @@ Our team wanted to be focus on the logic transfroming the NPM registry data, and
 
 - Favorites Page
 - Saved Previous Checkouts Page
+- Testing
 - UI improvements
 
 ## Lessons Learned:
